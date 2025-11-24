@@ -1,0 +1,54 @@
+stages:
+  - test
+  - build
+  - scan
+  - push
+  - update
+
+variables:
+  DOCKER_DRIVER: overlay2
+
+default:
+  image: docker:24.0
+  services:
+    - docker:24.0-dind
+  before_script:
+    - docker info
+
+test:
+  stage: test
+  script:
+    - echo "No automated tests yet. Add unit tests here."
+
+build:
+  stage: build
+  script:
+    - docker build -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA" .
+
+scan:
+  stage: scan
+  script:
+    - echo "Run Trivy here, for example:"
+    - echo "trivy image $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA || true"
+  allow_failure: true
+
+push:
+  stage: push
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+
+update:
+  stage: update
+  image: alpine/git
+  script:
+    - git config --global user.name "gitlab-ci"
+    - git config --global user.email "ci@gitlab.local"
+    - git clone git@gitlab.lab.local:group/app-deploy.git
+    - cd app-deploy
+    - sed -i "s/tag: .*/tag: $CI_COMMIT_SHORT_SHA/" values-dev.yaml
+    - git add values-dev.yaml
+    - git commit -m "Update image tag to $CI_COMMIT_SHORT_SHA"
+    - git push origin main
+  only:
+    - main

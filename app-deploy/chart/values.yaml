@@ -1,0 +1,12 @@
+image:
+  repository: registry.gitlab.lab.local/group/demo-app
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  host: demo.lab.local

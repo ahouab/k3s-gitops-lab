@@ -1,0 +1,11 @@
+image:
+  repository: registry.gitlab.lab.local/group/demo-app
+  tag: "prod"
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  host: demo.lab.local

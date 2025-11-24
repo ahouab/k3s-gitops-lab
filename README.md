@@ -15,3 +15,6 @@ Structure:
 - `app-source/` — Sample web application + GitLab CI pipeline
 - `app-deploy/` — Helm chart + dev/prod values for GitOps
 - `docs/`     — High-level architecture and lab scenarios
+
+© Walter Assets — All rights reserved
+
